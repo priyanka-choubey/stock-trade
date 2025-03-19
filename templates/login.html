@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home Page</title>
+        <link rel="stylesheet" href="{{.StaticBase}}/style.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <script src="{{.StaticBase}}/script.js"></script>
+    </head>
+    <body>
+        <header class="header">
+            <nav class="navbar navbar-expand-lg fixed-top py-3">
+                <div class="container"><a href="#" class="navbar-brand text-uppercase font-weight-bold">Trade lightly</a>
+                    <button type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><i class="fa fa-bars"></i></button>              
+                    <div id="navbarSupportedContent" class="collapse navbar-collapse">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item active"><a href="#" class="nav-link text-uppercase font-weight-bold">Home <span class="sr-only">(current)</span></a></li>
+                            <li class="nav-item"><a href="/signup" class="nav-link text-uppercase font-weight-bold">Sign up</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- For demo purpose -->
+        <div class="container">
+            <div class="pt-5 text-white">
+                <header class="py-5 mt-5">
+                    <h1 class="display-4">Log in</h1><br><br>
+                    
+
+                    <form class="lead mb-0" name="login_user" action="/login_user" method="POST">
+
+                        <label class="lead mb-0" for="uname">Username:</label>
+                        <input class="lead mb-0" type="text" id="uname" name="uname"><br><br>
+                        <label class="lead mb-0" for="token">Password:</label>
+                        <input class="lead mb-0" type="text" id="token" name="token"><br><br>
+                        <input class="btn btn-info btn-lg" type="submit" value="Submit">
+
+                    </form>
+                </header>
+            </div>
+        </div>
+
+    </body>
+
+</html>

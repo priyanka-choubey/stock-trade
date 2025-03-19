@@ -19,6 +19,10 @@ func (a App) Start() {
 		http.Handle("/static/", logreq(staticHandler("static")))
 	}
 	http.Handle("/", logreq(a.index))
+	http.Handle("/login", logreq(a.login))
+	http.Handle("/signup", logreq(a.signup))
+	http.Handle("/login_user", logreq(a.login_user))
+	http.Handle("/signup_user", logreq(a.signup_user))
 	addr := fmt.Sprintf(":%s", a.Port)
 	log.Printf("Starting app on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
@@ -67,6 +71,43 @@ func (a App) index(w http.ResponseWriter, r *http.Request) {
 		Name:       "Sonic The Hedgehog",
 		StaticBase: a.StaticBase,
 	})
+}
+
+func (a App) signup(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "signup.html", struct {
+		StaticBase string
+	}{
+		StaticBase: a.StaticBase,
+	})
+}
+
+func (a App) signup_user(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	var Username = r.Form["uname"]
+	var Password = r.Form["token"]
+
+	log.Printf("Username: %s Password: %s", Username, Password)
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
+
+func (a App) login(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "login.html", struct {
+		StaticBase string
+	}{
+		StaticBase: a.StaticBase,
+	})
+}
+
+func (a App) login_user(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	var Username = r.Form["uname"]
+	var Password = r.Form["token"]
+
+	log.Printf("Username: %s Password: %s", Username, Password)
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func staticHandler(dir string) http.HandlerFunc {
