@@ -6,11 +6,15 @@ import (
 	"net/http"
 	"os"
 	"text/template"
+
+	"github.com/priyanka-choubey/stock-trade/handlers"
 )
 
 type App struct {
-	Port       string
-	StaticBase string
+	Port         string
+	StaticBase   string
+	ErrorCode    int
+	ErrorMessage string
 }
 
 func (a App) Start() {
@@ -19,6 +23,7 @@ func (a App) Start() {
 		http.Handle("/static/", logreq(staticHandler("static")))
 	}
 	http.Handle("/", logreq(a.index))
+	http.Handle("/error", logreq(a.error))
 	http.Handle("/login", logreq(a.login))
 	http.Handle("/signup", logreq(a.signup))
 	http.Handle("/login_user", logreq(a.login_user))
@@ -73,6 +78,16 @@ func (a App) index(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (a App) error(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "error.html", struct {
+		Code    int
+		Message string
+	}{
+		Code:    a.ErrorCode,
+		Message: a.ErrorMessage,
+	})
+}
+
 func (a App) signup(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "signup.html", struct {
 		StaticBase string
@@ -86,7 +101,12 @@ func (a App) signup_user(w http.ResponseWriter, r *http.Request) {
 	var Username = r.Form["uname"]
 	var Password = r.Form["token"]
 
-	log.Printf("Username: %s Password: %s", Username, Password)
+	err := handlers.CreateUser(Username, Password)
+	if err != nil {
+		a.ErrorCode = err.code
+		a.ErrorMessage = err.message
+		http.Redirect(w, r, "/error", http.StatusSeeOther)
+	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
@@ -105,7 +125,12 @@ func (a App) login_user(w http.ResponseWriter, r *http.Request) {
 	var Username = r.Form["uname"]
 	var Password = r.Form["token"]
 
-	log.Printf("Username: %s Password: %s", Username, Password)
+	err := handlers.AuthenticateUser(Username, Password)
+	if err != nil {
+		a.ErrorCode = err.code
+		a.ErrorMessage = err.message
+		http.Redirect(w, r, "/error", http.StatusSeeOther)
+	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
