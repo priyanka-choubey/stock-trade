@@ -60,7 +60,7 @@ func (d *MySqlDatabase) CheckUserLoginDetails(username string, token string) err
 	var exists bool
 
 	row := d.Db.QueryRow("SELECT username,token FROM user WHERE username = ? AND token = ?", username, token)
-	if err := row.Scan(&exists); err != nil && err != sql.ErrNoRows {
+	if err := row.Scan(&exists); err != nil || err == sql.ErrNoRows {
 		return fmt.Errorf("user %s: invalid credentials: %v", username, err)
 	}
 	return nil
@@ -72,7 +72,7 @@ func (d *MySqlDatabase) CreateUserLoginDetails(username string, token string) er
 
 	d.Db.QueryRow("INSERT INTO user (username,token) VALUES (?,?)", username, token)
 	row := d.Db.QueryRow("SELECT username,token FROM user WHERE username = ? AND token = ?", username, token)
-	if err := row.Scan(&exists); err != nil {
+	if err := row.Scan(&exists); err != nil || err == sql.ErrNoRows {
 		return fmt.Errorf("user %s: cannot create user: %v", username, err)
 	}
 	return nil

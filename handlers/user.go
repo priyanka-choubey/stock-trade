@@ -1,30 +1,32 @@
 package handlers
 
 import (
-	"github.com/priyanka-choubey/stock-trade/db_manager"
+	"fmt"
+
+	dbmanager "github.com/priyanka-choubey/stock-trade/db_manager"
 )
 
 type status struct {
-	code    int
-	message string
+	Code    int
+	Message string
 }
 
 func CreateUser(username string, token string) status {
 
 	var resp status
 
-	db, err := db_manager.SetupDatabase()
+	db, err := dbmanager.SetupDatabase()
 	if err != nil {
-		resp.getStatus(500, "Internal error")
+		return resp.getStatus(500, "Internal error")
 	}
 
 	err = db.CreateUserLoginDetails(username, token)
 	if err != nil {
-		resp.getStatus(403, err)
+		return resp.getStatus(403, fmt.Sprintf("%v", err))
 	}
 
-	resp.getStatus(200, "OK")
-	defer db.Close()
+	resp = resp.getStatus(200, "OK")
+	defer db.Db.Close()
 	return resp
 }
 
@@ -32,21 +34,24 @@ func AuthenticateUser(username string, token string) status {
 
 	var resp status
 
-	db, err := db_manager.SetupDatabase()
+	db, err := dbmanager.SetupDatabase()
 	if err != nil {
-		resp.getStatus(500, "Internal error")
+		return resp.getStatus(500, "Internal error")
 	}
 
 	err = db.CheckUserLoginDetails(username, token)
 	if err != nil {
-		resp.getStatus(401, err)
+		fmt.Println("%v", resp.getStatus(401, fmt.Sprintf("%v", err)))
+		return resp.getStatus(401, fmt.Sprintf("%v", err))
 	}
-	resp.getStatus(200, "OK")
-	defer db.Close()
+
+	resp = resp.getStatus(200, "OK")
+	defer db.Db.Close()
 	return resp
 }
 
-func (s status) getStatus(code int, message string) {
-	s.code = code
-	s.message = message
+func (s status) getStatus(code int, message string) status {
+	s.Code = code
+	s.Message = message
+	return s
 }
