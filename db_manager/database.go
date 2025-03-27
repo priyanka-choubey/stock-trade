@@ -35,7 +35,7 @@ func SetupDatabase() (*MySqlDatabase, error) {
 		User:   os.Getenv("DBUSER"),
 		Passwd: os.Getenv("DBPASS"),
 		Net:    "tcp",
-		Addr:   "127.0.0.1:3306",
+		Addr:   os.Getenv("DBURL"),
 		DBName: "trade",
 	}
 	// Get a database handle.
